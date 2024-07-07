@@ -8,12 +8,18 @@ is_left = 90.
 songs = playlist("/media/songs")
 jingles = playlist("/media/jingles")
 
-def next()
-  uri = list.hd(process.read.lines("next-song"))
-  request.create(uri)
+# def next()
+#   uri = list.hd(process.read.lines("next-song"))
+#   request.create(uri)
+# end
+# s = request.dynamic(next)
+
+def next(genre) =
+  result = list.hd(default="", process.read.lines("next-song #{genre}"))
+  [request.create(result)]
 end
-s = request.dynamic(next)
-# r = request.dynamic.list(...)
+s = request.dynamic.list(next("sertanejo"))
+
 
 def queue(remaining, _) =
   log("Queueing with #{remaining} seconds remaining")

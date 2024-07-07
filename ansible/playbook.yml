@@ -1,0 +1,94 @@
+---
+- name: Preparar o ambiente para o Icecast e LiquidSoap
+  hosts: all
+  become: true
+  remote_user: root
+
+  tasks:
+    - name: Garante que o grupo "icecast2" exista
+      ansible.builtin.group:
+        name: icecast2
+        state: present
+
+    - name: Adicionar os usuários nginx, liquidsoap e icecast2
+      ansible.builtin.user:
+        name: "{{ item }}"
+        group: "{{ item }}"
+      with_items:
+        - "nginx"
+        - "icecast2"
+        - "liquidsoap"
+
+    # Icecast
+    - name: Alterar as configurações do Icecast
+      ansible.builtin.copy:
+        src: etc/icecast2/icecast.xml
+        dest: /etc/icecast2/icecast.xml
+        owner: icecast2
+        group: icecast2
+        mode: '0644'
+
+    # LiquidSoap
+    - name: Instalar o executavel do de predicao de musicas do LiquidSoap
+      ansible.builtin.copy:
+        src: usr/local/bin/next-song
+        dest: /usr/local/bin/next-song
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Criar o diretorio de configuracoes do LiquidSoap
+      ansible.builtin.file:
+        path: /etc/liquidsoap
+        state: directory
+        owner: liquidsoap
+        group: liquidsoap
+        mode: '0755'
+
+    - name: Alterar as configurações do LiquidSoap
+      ansible.builtin.copy:
+        src: "etc/liquidsoap/{{ item }}"
+        dest: "/etc/liquidsoap/{{ item }}"
+        owner: liquidsoap
+        group: liquidsoap
+        mode: '0644'
+      with_items:
+        - "radio.liq"
+
+    # Nginx
+    - name: Copiar os arquivos de configuração do Nginx
+      ansible.builtin.copy:
+        src: "etc/nginx/sites-available/radio.somdomato.com"
+        dest: "/etc/nginx/sites-available/radio.somdomato.com"
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Cria os links simbolicos para os sites
+      ansible.builtin.file:
+        src: "/etc/nginx/sites-available/radio.somdomato.com"
+        dest: "/etc/nginx/sites-enabled/radio.somdomato.com"
+        state: link
+
+    # Systemd
+    - name: Alterar as unidades do systemd
+      ansible.builtin.copy:
+        src: "etc/systemd/system/{{ item }}"
+        dest: "/etc/systemd/system/{{ item }}"
+        owner: root
+        group: root
+        mode: "0644"
+      with_items:
+        - "icecast2.service"
+        - "liquidsoap.service"
+
+    - name: Reiniciar as unidades do systemd
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        state: restarted
+        enabled: true
+        daemon_reload: true
+      with_items:
+        - "icecast2.service"
+        - "liquidsoap.service"
+        - "nginx.service"

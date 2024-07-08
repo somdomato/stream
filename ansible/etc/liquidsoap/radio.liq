@@ -4,7 +4,7 @@ is_left = 90.
 
 %include "settings.liq"
 
-songs = playlist("/media/songs")
+# songs = playlist("/media/songs")
 jingles = playlist("/media/jingles")
 live = input.harbor("aovivo", port=8010, user="dj", password="hackme")
 

@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
 export SONGS_PATH=/media/songs 
+export PATH=$PATH:$HOME/.bun/bin
 
-/usr/share/liquidsoap/.bun/bin/bun /var/www/somdomato/backend/src/engine.ts "$1"
+bun /var/www/somdomato/backend/src/engine.ts "$1"

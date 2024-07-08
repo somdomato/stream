@@ -7,7 +7,7 @@ is_left = 90.
 # default = single("~/radio/default.ogg")
 songs = playlist("/media/songs")
 jingles = playlist("/media/jingles")
-live = input.harbor("aovivo", name="Radio Som do Mato", description="A mais sertaneja!", port=8010, user="dj", password="hackme")
+live = input.harbor("aovivo", description="A mais sertaneja!", port=8010, user="dj", password="hackme")
 
 # Play user requests if there are any,
 # otherwise one of our playlists,

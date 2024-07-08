@@ -29,6 +29,10 @@ uni = source.on_end(delay=is_left , next("universitario"), queue)
 uni = fallback([delay(1200., jingles), uni])
 uni = fallback(track_sensitive=false, [live, uni])
 
+modao = source.on_end(delay=is_left , next("modao"), queue)
+modao = fallback([delay(1200., jingles), modao])
+modao = fallback(track_sensitive=false, [live, modao])
+
 output.icecast(%mp3, 
   name="Rádio Som do Mato",
   description="A mais sertaneja!",
@@ -39,9 +43,9 @@ output.icecast(%mp3,
   password="hackme", 
   mount="sertanejo.mp3", 
   encoding="UTF-8",
-  mksafe(full))
+  mksafe(geral))
 
-  output.icecast(%mp3, 
+output.icecast(%mp3, 
   name="Rádio Som do Mato",
   description="Sertanejo Universitário",
   genre="Sertanejo",
@@ -52,3 +56,15 @@ output.icecast(%mp3,
   mount="universitario.mp3", 
   encoding="UTF-8",
   mksafe(uni))
+
+output.icecast(%mp3, 
+  name="Rádio Som do Mato",
+  description="Moda de Viola",
+  genre="Sertanejo",
+  url="https://somdomato.com",
+  host="localhost", 
+  port=8004, 
+  password="hackme", 
+  mount="modao.mp3", 
+  encoding="UTF-8",
+  mksafe(modao))

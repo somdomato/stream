@@ -49,6 +49,12 @@
     </listen-socket>
 
     <listen-socket>
+        <port>8004</port>
+        <mount-name>/modao.mp3</mount-name>
+        <charset>UTF-8</charset>
+    </listen-socket>
+
+    <listen-socket>
         <port>8443</port>
         <ssl>1</ssl>
     </listen-socket>

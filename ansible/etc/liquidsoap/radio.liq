@@ -14,11 +14,23 @@ jingles = playlist("/media/jingles")
 # end
 # s = request.dynamic(next)
 
-def next(genre) =
-  result = list.hd(default="", process.read.lines("next-song #{genre}"))
-  [request.create(result)]
+# def next(genre) =
+#   result = list.hd(default="", process.read.lines("next-song #{genre}"))
+#   [request.create(result)]
+# end
+# s = request.dynamic.list(next("sertanejo"))
+
+# def cross(g)
+#   crossfade(fade_out=3., fade_in=3., duration=5., g)
+# end
+
+def next(genre)
+  def request_function() =
+    uri = list.hd(process.read.lines("next-song #{genre}"))
+    request.create(uri)
+  end
+  request.dynamic(request_function)
 end
-s = request.dynamic.list(next("sertanejo"))
 
 
 def queue(remaining, _) =
@@ -27,7 +39,7 @@ def queue(remaining, _) =
   #   log("Fetching next query failed")
   # end
 end
-s = source.on_end(delay=is_left , s, queue)
+s = source.on_end(delay=is_left , next("sertanejo"), queue)
 
 main = fallback(track_sensitive=false, [s, songs])
 radio = fallback([delay(300., jingles), main])

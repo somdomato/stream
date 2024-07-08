@@ -1,4 +1,4 @@
-#!/usr/bin/env liquidsoap
+#!/usr/bin/liquidsoap
 
 is_left = 90.
 

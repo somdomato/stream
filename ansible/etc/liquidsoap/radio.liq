@@ -1,8 +1,6 @@
 #!/usr/bin/env liquidsoap
 
-settings.log.stdout.set(true)
-settings.log.level.set(2)
-settings.log.file.path.set("/var/log/liquidsoap.log")
+%include "settings.liq"
 
 is_left = 90.
 songs = playlist("/media/songs")
@@ -53,7 +51,7 @@ output.icecast(%mp3,
   port=8000, 
   password="hackme", 
   mount="sertanejo.mp3", 
-  charset="UTF-8",
+  encoding="UTF-8",
   mksafe(radio))
 
 

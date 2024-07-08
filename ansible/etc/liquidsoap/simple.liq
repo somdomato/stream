@@ -1,8 +1,5 @@
 #!/usr/bin/liquidsoap
 
-# Log dir
-log.file.path.set("/tmp/radio.log")
-
 # Music
 myplaylist = playlist("/media/songs")
 

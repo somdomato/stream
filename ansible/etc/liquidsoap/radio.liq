@@ -5,7 +5,8 @@ is_left = 90.
 %include "settings.liq"
 
 # songs = playlist("/media/songs")
-jingles = playlist("/media/jingles.pls")
+jingles = playlist("/media/jingles")
+security = single("/media/jingles/050723 RADIO SOM DO MATO VINHETA 001.mp3")
 live = input.harbor("aovivo", port=8010, user="dj", password="hackme")
 
 def next(genre)
@@ -24,14 +25,17 @@ geral = source.on_end(delay=is_left , next("sertanejo"), queue)
 # main = fallback(track_sensitive=false, [s, songs])
 geral = fallback([delay(1200., jingles), geral])
 geral = fallback(track_sensitive=false, [live, geral])
+geral = fallback(track_sensitive = false, [geral, security])
 
 uni = source.on_end(delay=is_left , next("universitario"), queue)
 uni = fallback([delay(1200., jingles), uni])
 uni = fallback(track_sensitive=false, [live, uni])
+uni = fallback(track_sensitive = false, [uni, security])
 
 modao = source.on_end(delay=is_left , next("modao"), queue)
 modao = fallback([delay(1200., jingles), modao])
 modao = fallback(track_sensitive=false, [live, modao])
+modao = fallback(track_sensitive = false, [modao, security])
 
 output.icecast(%mp3, 
   name="Rádio Som do Mato",
@@ -43,7 +47,7 @@ output.icecast(%mp3,
   password="hackme", 
   mount="sertanejo.mp3", 
   encoding="UTF-8",
-  mksafe(geral))
+  geral)
 
 output.icecast(%mp3, 
   name="Rádio Som do Mato",
@@ -55,7 +59,7 @@ output.icecast(%mp3,
   password="hackme", 
   mount="universitario.mp3", 
   encoding="UTF-8",
-  mksafe(uni))
+  uni)
 
 output.icecast(%mp3, 
   name="Rádio Som do Mato",
@@ -67,4 +71,4 @@ output.icecast(%mp3,
   password="hackme", 
   mount="modao.mp3", 
   encoding="UTF-8",
-  mksafe(modao))
+  modao)

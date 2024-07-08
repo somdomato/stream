@@ -54,6 +54,7 @@
         mode: '0644'
       with_items:
         - "radio.liq"
+        - "settings.liq"
 
     # Nginx
     - name: Copiar os arquivos de configuração do Nginx

@@ -49,6 +49,11 @@
     </listen-socket> -->
 
     <listen-socket>
+        <port>8010</port>
+        <shoutcast-mount>/aovivo</shoutcast-mount>
+    </listen-socket>
+
+    <listen-socket>
         <port>8443</port>
         <ssl>1</ssl>
     </listen-socket>

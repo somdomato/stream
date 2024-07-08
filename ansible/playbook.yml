@@ -29,13 +29,16 @@
         mode: '0644'
 
     # LiquidSoap
-    - name: Instalar o executavel do de predicao de musicas do LiquidSoap
+    - name: Instalar os executaveis auxiliares do LiquidSoap
       ansible.builtin.copy:
-        src: usr/local/bin/next-song
-        dest: /usr/local/bin/next-song
+        src: "usr/local/bin/{{ item }}"
+        dest: "/usr/local/bin/{{ item }}"
         owner: root
         group: root
         mode: '0755'
+      with_items:
+        - "next-song"
+        - "generate-playlist"
 
     - name: Criar o diretorio de configuracoes do LiquidSoap
       ansible.builtin.file:

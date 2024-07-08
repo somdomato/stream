@@ -5,7 +5,7 @@ is_left = 90.
 %include "settings.liq"
 
 # songs = playlist("/media/songs")
-jingles = playlist("/media/jingles")
+jingles = playlist("/media/jingles.pls")
 live = input.harbor("aovivo", port=8010, user="dj", password="hackme")
 
 def next(genre)

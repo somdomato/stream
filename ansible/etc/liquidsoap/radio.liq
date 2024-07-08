@@ -6,7 +6,7 @@ is_left = 90.
 
 songs = playlist("/media/songs")
 jingles = playlist("/media/jingles")
-live = input.harbor("aovivo", description="A mais sertaneja!", port=8010, user="dj", password="hackme")
+live = input.harbor("aovivo", port=8010, user="dj", password="hackme")
 
 def next(genre)
   def request_function() =

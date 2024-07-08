@@ -1,18 +1,12 @@
 #!/usr/bin/env liquidsoap
 
-%include "settings.liq"
-
 is_left = 90.
 
-# default = single("~/radio/default.ogg")
+%include "settings.liq"
+
 songs = playlist("/media/songs")
 jingles = playlist("/media/jingles")
 live = input.harbor("aovivo", description="A mais sertaneja!", port=8010, user="dj", password="hackme")
-
-# Play user requests if there are any,
-# otherwise one of our playlists,
-# and the default file if anything goes wrong.
-# radio = fallback([ request.queue(id="request"), switch([({ 6h-22h }, day), ({ 22h-6h }, night)]), default])
 
 def next(genre)
   def request_function() =
@@ -24,20 +18,21 @@ end
 
 def queue(remaining, _) =
   log("Queueing with #{remaining} seconds remaining")
-  # if not s.fetch() then
-  #   log("Fetching next query failed")
-  # end
 end
-s = source.on_end(delay=is_left , next("sertanejo"), queue)
 
-main = fallback(track_sensitive=false, [s, songs])
-radio = fallback([delay(600., jingles), main])
-full = fallback(track_sensitive=false, [live, radio])
+geral = source.on_end(delay=is_left , next("sertanejo"), queue)
+# main = fallback(track_sensitive=false, [s, songs])
+geral = fallback([delay(1200., jingles), geral])
+geral = fallback(track_sensitive=false, [live, geral])
+
+uni = source.on_end(delay=is_left , next("universitario"), queue)
+uni = fallback([delay(1200., jingles), uni])
+uni = fallback(track_sensitive=false, [live, uni])
 
 output.icecast(%mp3, 
-  name="Radio Som do Mato",
-  genre="Sertanejo",
+  name="Rádio Som do Mato",
   description="A mais sertaneja!",
+  genre="Sertanejo",
   url="https://somdomato.com",
   host="localhost", 
   port=8000, 
@@ -45,3 +40,15 @@ output.icecast(%mp3,
   mount="sertanejo.mp3", 
   encoding="UTF-8",
   mksafe(full))
+
+  output.icecast(%mp3, 
+  name="Rádio Som do Mato",
+  description="Sertanejo Universitário",
+  genre="Sertanejo",
+  url="https://somdomato.com",
+  host="localhost", 
+  port=8002, 
+  password="hackme", 
+  mount="universitario.mp3", 
+  encoding="UTF-8",
+  mksafe(uni))

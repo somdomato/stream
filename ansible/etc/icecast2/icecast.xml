@@ -42,11 +42,11 @@
         <bitrate>128</bitrate>
     </listen-socket>
 
-    <!-- <listen-socket>
+    <listen-socket>
         <port>8002</port>
-        <mount-name>/modao</mount-name>
+        <mount-name>/universitario.mp3</mount-name>
         <charset>UTF-8</charset>
-    </listen-socket> -->
+    </listen-socket>
 
     <listen-socket>
         <port>8443</port>

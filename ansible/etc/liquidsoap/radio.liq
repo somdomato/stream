@@ -7,7 +7,7 @@ is_left = 90.
 # default = single("~/radio/default.ogg")
 songs = playlist("/media/songs")
 jingles = playlist("/media/jingles")
-live = input.harbor("aovivo", name="Radio Som do Mato", port=8010, password="hackme")
+live = input.harbor("aovivo", name="Radio Som do Mato", description="A mais sertaneja!", port=8010, username="dj", password="hackme")
 
 # Play user requests if there are any,
 # otherwise one of our playlists,
@@ -37,7 +37,7 @@ full = fallback(track_sensitive=false, [live, radio])
 output.icecast(%mp3, 
   name="Radio Som do Mato",
   genre="Sertanejo",
-  description="O melhor do sertanejo!",
+  description="A mais sertaneja!",
   url="https://somdomato.com",
   host="localhost", 
   port=8000, 

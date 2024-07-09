@@ -1,0 +1,12 @@
+services:
+  icecast:
+    image: pltnk/icecast2
+    ports:
+      - "8000:8000"
+
+  backend:
+    image: example/database
+    volumes:
+      - db-data:/etc/data
+    networks:
+      - back-tier

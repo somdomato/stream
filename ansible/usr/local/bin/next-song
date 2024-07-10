@@ -3,4 +3,4 @@
 export SONGS_PATH=/media/songs 
 export PATH=$PATH:$HOME/.bun/bin
 
-bun /var/www/somdomato/backend/src/engine.ts "$1"
+bun /var/www/somdomato/backend/src/engine.ts $1

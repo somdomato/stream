@@ -2,17 +2,24 @@
 
 %include "settings.liq"
 
-def get_request() =
-  result = process.read.lines("next-song")
-  request.create(list.hd(result))
-  #request.create(list.hd(default="", result))
-end
-r = request.dynamic(get_request)
-
-s = single("/media/jingles/050723 RADIO SOM DO MATO VINHETA 002.mp3")
+s = single("/media/jingles/050723 RADIO SOM DO MATO VINHETA 001.mp3")
 j = playlist("/media/jingles")
 l = input.harbor("aovivo", port=8010, user="dj", password="hackme")
-m = fallback([delay(1200., j), r])
+
+def next()
+  def request_function() =
+    uri = list.hd(process.read.lines("next-song"))
+    request.create(uri)
+  end
+  [request.dynamic(request_function)]
+end
+
+def queue(remaining, _) =
+  log("Queueing with #{remaining} seconds remaining")
+end
+
+r = source.on_end(delay=.30, next, queue)
+m = fallback([delay(1200., jingles), r])
 g = fallback(track_sensitive=false, [l, m, s])
 
 output.icecast(%vorbis(samplerate = 44100, channels = 2, quality = 0.4),
@@ -24,5 +31,6 @@ output.icecast(%vorbis(samplerate = 44100, channels = 2, quality = 0.4),
   host = "localhost", 
   port = 8000,
   password = "hackme", 
+  bitrate = 128,
   mount = "radio.ogg",
   g)

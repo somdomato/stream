@@ -1,12 +1,34 @@
 services:
   icecast:
-    image: pltnk/icecast2
+    build:
+      dockerfile: ./Containerfile.icecast
+    image: icecast
+    container_name: icecast
+    restart: always
     ports:
-      - "8000:8000"
-
-  backend:
-    image: example/database
+      - 8000:8000
     volumes:
-      - db-data:/etc/data
-    networks:
-      - back-tier
+      - ./config/icecast.xml:/etc/icecast/icecast.xml
+
+  liquidsoap:
+    build:
+      dockerfile: ./Containerfile.liquidsoap
+    image: liquidsoap
+    container_name: liquidsoap
+    restart: always
+    volumes:
+      - ./config/liquidsoap.liq:/etc/liquidsoap/liquidsoap.liq
+      - ./music/:/music/
+    depends_on:
+      - icecast
+
+  api:
+    build:
+      dockerfile: ./Containerfile.bun
+    container_name: api
+    restart: always
+    ports:
+      - 3000:3000
+    volumes:
+      - ./index.ts:/usr/src/app/index.ts
+      - ./music/:/music/

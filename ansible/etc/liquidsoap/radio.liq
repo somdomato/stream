@@ -9,11 +9,10 @@ def get_request() =
 end
 r = request.dynamic(get_request)
 
-s = single("/media/jingles/050723 RADIO SOM DO MATO VINHETA 002.mp3")
-j = playlist("/media/jingles")
-l = input.harbor("aovivo", port=8010, user="dj", password="hackme")
-m = fallback([delay(1200., j), r])
-g = fallback(track_sensitive=false, [l, m, s])
+# j = playlist("/media/jingles")
+# l = input.harbor("aovivo", port=8010, user="dj", password="hackme")
+# m = fallback([delay(1200., j), r])
+# g = fallback(track_sensitive=false, [l, m, s])
 
 output.icecast(%vorbis(samplerate = 44100, channels = 2, quality = 0.4),
   name = "Rádio Som do Mato",
@@ -25,4 +24,5 @@ output.icecast(%vorbis(samplerate = 44100, channels = 2, quality = 0.4),
   port = 8000,
   password = "hackme", 
   mount = "radio.ogg",
-  g)
+  mksafe(g)
+  )

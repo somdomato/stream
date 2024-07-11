@@ -30,5 +30,5 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - ./index.ts:/usr/src/app/index.ts
+      - ./api/index.ts:/usr/src/app/index.ts
       - ./music/:/music/

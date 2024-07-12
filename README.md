@@ -6,8 +6,8 @@ Streaming de audio para as massas.
 
 ## Sistemas
 
-| sistema | url | 
-| :--- | ---: |
-| [Frontend](./frontend) | [somdomato.com](https://somdomato.com) |
-| [Backend](./backend) | [api.somdomato.com](https://api.somdomato.com) |
-| Stream | [radio.somdomato.com](https://radio.somdomato.com) |
+| sistema | url | descrição |
+| :--- | ---: | ---: |
+| [Frontend](./frontend) | [somdomato.com](https://somdomato.com) | |
+| [Backend](./backend) | [api.somdomato.com](https://api.somdomato.com) | |
+| Stream | [radio.somdomato.com](https://radio.somdomato.com) | |

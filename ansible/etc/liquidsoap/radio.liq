@@ -2,17 +2,32 @@
 
 %include "settings.liq"
 
-def get_request() =
-  result = process.read.lines("next-song")
-  request.create(list.hd(result))
-  #request.create(list.hd(default="", result))
+def cross(g)
+  crossfade(fade_out=3., fade_in=3., duration=5., g)
 end
-r = request.dynamic(get_request)
 
-# j = playlist("/media/jingles")
-# l = input.harbor("aovivo", port=8010, user="dj", password="hackme")
-# m = fallback([delay(1200., j), r])
-# g = fallback(track_sensitive=false, [l, m, s])
+def next(g)
+  def request_function() =
+    lines = process.read.lines("curl https://api.somdomato.com/radio#{g}")
+    uri = list.hd(default="",lines)
+    request.create(uri)
+  end
+  request.dynamic(request_function)
+end
+
+main = next('principal')
+#dance = next('dance')
+#rock = next('rock')
+#seventies = next('70s')
+#eighties = next('80s')
+#nineties = next('90s')
+
+main = fallback([cross(main), blank()])
+# dance = fallback([cross(dance), rhythm])
+# rock = fallback([cross(rock), rhythm])
+# seventies = fallback([cross(seventies), rhythm])
+# eighties = fallback([cross(eighties), rhythm])
+# nineties = fallback([cross(nineties), rhythm])
 
 output.icecast(%vorbis(samplerate = 44100, channels = 2, quality = 0.4),
   name = "Rádio Som do Mato",
@@ -24,5 +39,4 @@ output.icecast(%vorbis(samplerate = 44100, channels = 2, quality = 0.4),
   port = 8000,
   password = "hackme", 
   mount = "radio.ogg",
-  mksafe(g)
-  )
+  g)

@@ -47,11 +47,10 @@
         mode: '0755'
       with_items:
         - "next-song"
-        - "generate-playlist"
 
     - name: Criar o diretorio de configuracoes do LiquidSoap
       ansible.builtin.file:
-        path: /etc/liquidsoap
+        path: /etc/liquidsoap/sdm
         state: directory
         owner: liquidsoap
         group: liquidsoap
@@ -59,29 +58,24 @@
 
     - name: Alterar as configurações do LiquidSoap
       ansible.builtin.copy:
-        src: "etc/liquidsoap/{{ item }}"
-        dest: "/etc/liquidsoap/{{ item }}"
+        src: "etc/liquidsoap/sdm/{{ item }}"
+        dest: "/etc/liquidsoap/sdm/{{ item }}"
         owner: liquidsoap
         group: liquidsoap
         mode: '0644'
       with_items:
         - "somdomato.liq"
         - "settings.liq"
+        - "outputs.ogg.liq"
 
     # Nginx
     - name: Copiar os arquivos de configuração do Nginx
       ansible.builtin.copy:
-        src: "etc/nginx/sites-available/20-radio.somdomato.com"
-        dest: "/etc/nginx/sites-available/20-radio.somdomato.com"
+        src: "etc/nginx/sites.d/20-radio.somdomato.com"
+        dest: "/etc/nginx/sites.d/20-radio.somdomato.com"
         owner: root
         group: root
         mode: '0644'
-
-    - name: Cria os links simbolicos para os sites
-      ansible.builtin.file:
-        src: "/etc/nginx/sites-available/20-radio.somdomato.com"
-        dest: "/etc/nginx/sites-enabled/20-radio.somdomato.com"
-        state: link
 
     # Systemd
     - name: Alterar as unidades do systemd

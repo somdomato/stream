@@ -2,7 +2,7 @@
 
 def next(g)
   def request_function() =
-    lines = process.read.lines("curl https://api.somdomato.com#{g}")
+    lines = process.read.lines("curl https://api.somdomato.com/radio#{g}")
     uri = list.hd(default="",lines)
     request.create(uri)
   end

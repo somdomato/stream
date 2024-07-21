@@ -1,13 +1,12 @@
 output.icecast(
-  %vorbis(samplerate = 44100, channels = 2, quality = 0.4),
+  %mp3(bitrate=128, samplerate=44100, id3v2=true), 
   name = "Rádio Som do Mato",
   description = "A mais sertaneja!",
   genre = "Sertanejo",
   url = "https://somdomato.com",
-  encoding = "UTF-8",
   host = "localhost", 
-  port = 8000,
+  port = 8000, 
   password = "hackme", 
-  mount = "radio.ogg",
-  mksafe(geral)
-)
+  mount = "radio.mp3", 
+  encoding = "UTF-8",
+  mksafe(geral))

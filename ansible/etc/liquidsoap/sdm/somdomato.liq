@@ -1,5 +1,10 @@
 #!/usr/bin/env liquidsoap
 
+# %include "outputs.mp3.liq"
+settings.harbor.bind_addrs := ["0.0.0.0"]
+
+live = input.harbor("live",port=8080,password="hackme")
+
 def next(g)
   def request_function() =
     lines = process.read.lines("curl https://api.somdomato.com/radio#{g}")
@@ -9,9 +14,10 @@ def next(g)
   request.dynamic(request_function)
 end
 
-principal = next('')
+geral = next('')
 # modao = next('/modao')
-# romantico = next('/romantico')
-# universitario = next('/universitario')
 
-%include "outputs.ogg.liq"
+radio = fallback(track_sensitive=false, [live, geral])
+# main = fallback([cross(main), blank()])
+
+%include "outputs.mp3.liq"

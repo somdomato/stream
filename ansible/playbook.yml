@@ -67,6 +67,7 @@
         - "somdomato.liq"
         - "settings.liq"
         - "outputs.ogg.liq"
+        - "outputs.mp3.liq"
 
     # Nginx
     - name: Copiar os arquivos de configuração do Nginx

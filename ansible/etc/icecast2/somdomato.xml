@@ -33,7 +33,7 @@
 
     <listen-socket>
         <port>8000</port>
-        <mount-name>/radio.ogg</mount-name>
+        <mount-name>/radio.mp3</mount-name>
         <charset>UTF-8</charset>
         <stream-name>Radio Som do Mato</stream-name>
         <stream-description>A mais sertaneja</stream-description>

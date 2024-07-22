@@ -22,6 +22,8 @@ server {
     proxy_set_header X-Forwarded-Host $host;
     proxy_set_header X-Forwarded-Server $host;
     proxy_set_header X-Real-IP $remote_addr;
+
+    include conf.d/no-cache.conf;
     
     location / {
         proxy_intercept_errors on;

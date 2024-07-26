@@ -16,8 +16,6 @@ end
 
 bun = next('')
 principal = fallback(track_sensitive=false, [live, bun])
-
-radio = fallback(track_sensitive=false, [live, geral])
 # main = fallback([cross(main), blank()])
 
 %include "outputs.mp3.liq"

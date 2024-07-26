@@ -2,6 +2,8 @@
 
 ![Rádio Som do Mato](https://raw.githubusercontent.com/somdomato/somdomato/main/frontend/public/images/logo.svg "Rádio Som do Mato")
 
+[![Deploy](https://github.com/somdomato/stream/actions/workflows/deploy.yml/badge.svg)](https://github.com/somdomato/stream/actions/workflows/deploy.yml)
+
 Streaming de audio para as massas.
 
 ## Sistemas

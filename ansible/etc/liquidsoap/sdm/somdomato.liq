@@ -1,9 +1,9 @@
 #!/usr/bin/env liquidsoap
 
-# %include "outputs.mp3.liq"
-settings.harbor.bind_addrs := ["0.0.0.0"]
+live = input.harbor("aovivo", port=8010, user="dj", password="hackme")
 
-live = input.harbor("live",port=8080,password="hackme")
+# day = playlist("/radio/day.pls") # Day music
+# radio = switch([({7h-12h}, manha), ({12h-18h}, tarde), ({18h-0h}, noite), ({0h-7h}, madrugada)])
 
 def next(g)
   def request_function() =
@@ -14,8 +14,8 @@ def next(g)
   request.dynamic(request_function)
 end
 
-geral = next('')
-# modao = next('/modao')
+bun = next('')
+principal = fallback(track_sensitive=false, [live, bun])
 
 radio = fallback(track_sensitive=false, [live, geral])
 # main = fallback([cross(main), blank()])

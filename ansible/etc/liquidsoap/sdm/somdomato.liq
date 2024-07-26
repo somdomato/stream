@@ -7,7 +7,7 @@ live = input.harbor("aovivo", port=8010, user="dj", password="hackme")
 
 def next(g)
   def request_function() =
-    lines = process.read.lines("curl https://api.somdomato.com/radio#{g}")
+    lines = process.read.lines("curl http://localhost:3333/radio#{g}")
     uri = list.hd(default="",lines)
     request.create(uri)
   end

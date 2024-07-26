@@ -9,5 +9,5 @@ output.icecast(
   port = 8000,
   password = "hackme", 
   mount = "radio.ogg",
-  mksafe(geral)
+  mksafe(principal)
 )

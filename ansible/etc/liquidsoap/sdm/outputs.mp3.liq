@@ -9,4 +9,4 @@ output.icecast(
   password = "hackme", 
   mount = "radio.mp3", 
   encoding = "UTF-8",
-  mksafe(geral))
+  mksafe(principal))

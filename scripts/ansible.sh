@@ -1,7 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-if [ -f /etc/arch-release ]; then
-  ansible-playbook -e "ansible_port=2200 ansible_python_interpreter=/usr/bin/python3" /home/lucas/code/somdomato/stream/ansible/playbook.yml -i eris.paxa.dev,
+ROOT="$(dirname "$(readlink -f "$0")")/.."
+
+if [ "$(lsb_release -is)" == "Arch" ] || [ "$(lsb_release -is)" == "VoidLinux" ]; then
+  ansible-playbook -e "ansible_port=2200 ansible_python_interpreter=/usr/bin/python3" "$ROOT/ansible/playbook.yml" -i tyche,
 else
-  ansible-playbook --connection=local -e "ansible_port=2200" /home/nginx/radio.somdomato.com/ansible/playbook.yml -i localhost,
+  ansible-playbook --connection=local -e "ansible_port=2200" "$ROOT/ansible/playbook.yml" -i localhost,
 fi

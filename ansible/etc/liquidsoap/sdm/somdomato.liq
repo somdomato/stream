@@ -1,21 +1,38 @@
 #!/usr/bin/env liquidsoap
 
+# Configuração do input ao vivo
 live = input.harbor("aovivo", port=8010, user="dj", password="hackme")
 
-# day = playlist("/radio/day.pls") # Day music
-# radio = switch([({7h-12h}, manha), ({12h-18h}, tarde), ({18h-0h}, noite), ({0h-7h}, madrugada)])
-
-def next(g)
+# Função para buscar próxima música do Next.js
+def next()
   def request_function() =
-    lines = process.read.lines("curl http://localhost:3333/radio#{g}")
-    uri = list.hd(default="",lines)
+    # Chama a API do Next.js (ajuste a porta se necessário)
+    lines = process.read.lines("curl -s http://localhost:3333/api/song")
+    uri = list.hd(default="", lines)
+    
+    # Log para depuração (verifique no terminal)
+    log("Próxima música: #{uri}")
+    
     request.create(uri)
   end
-  request.dynamic(request_function)
+  request.dynamic(id="next_track", request_function)
 end
 
-bun = next('')
-principal = fallback(track_sensitive=false, [live, bun])
-# main = fallback([cross(main), blank()])
+# Cria a fonte de música automática
+autodj = next()
 
-%include "outputs.mp3.liq"
+# Prioridade: transmissão ao vivo > autodj
+radio = fallback(track_sensitive=false, [live, autodj])
+
+# Adiciona transições suaves entre músicas
+radio = crossfade(radio)
+
+# Saídas de áudio (exemplo: MP3 via Icecast)
+output.icecast(
+  %mp3(bitrate=192),
+  host="localhost",
+  port=8000,
+  password="hackme",
+  mount="/radio.mp3",
+  radio
+)

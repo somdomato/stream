@@ -1,5 +1,7 @@
 #!/usr/bin/env liquidsoap
 
+
+
 # Configuração do input ao vivo
 live = input.harbor("aovivo", port=8010, user="dj", password="hackme")
 
@@ -25,7 +27,7 @@ autodj = next()
 radio = fallback(track_sensitive=false, [live, autodj])
 
 # Adiciona transições suaves entre músicas
-radio = crossfade(radio)
+#radio = crossfade(radio)
 
 # Saídas de áudio (exemplo: MP3 via Icecast)
 output.icecast(
@@ -34,5 +36,5 @@ output.icecast(
   port=8000,
   password="hackme",
   mount="/radio.mp3",
-  radio
+  mksafe(radio)
 )

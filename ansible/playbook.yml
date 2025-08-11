@@ -72,8 +72,8 @@
     # Nginx
     - name: Copiar os arquivos de configuração dos sites do Nginx
       ansible.builtin.copy:
-        src: "etc/nginx/sites.d/20-radio.somdomato.com"
-        dest: "/etc/nginx/sites.d/20-radio.somdomato.com"
+        src: "etc/nginx/sites.d/50-radio.somdomato.com.conf"
+        dest: "/etc/nginx/sites.d/50-radio.somdomato.com.conf"
         owner: root
         group: root
         mode: '0644'

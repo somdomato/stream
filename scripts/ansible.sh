@@ -2,7 +2,9 @@
 
 ROOT="$(dirname "$(readlink -f "$0")")/.."
 
-if [ "$(lsb_release -is)" == "Arch" ] || [ "$(lsb_release -is)" == "VoidLinux" ]; then
+if [ "$(uname -s)" = "Darwin" ]; then
+  ansible-playbook -e "ansible_port=2200 ansible_python_interpreter=/usr/bin/python3" "$ROOT/ansible/playbook.yml" -i tyche,
+elif [ "$(lsb_release -is)" == "Arch" ] || [ "$(lsb_release -is)" == "VoidLinux" ]; then
   ansible-playbook -e "ansible_port=2200 ansible_python_interpreter=/usr/bin/python3" "$ROOT/ansible/playbook.yml" -i tyche,
 else
   ansible-playbook --connection=local -e "ansible_port=2200" "$ROOT/ansible/playbook.yml" -i localhost,

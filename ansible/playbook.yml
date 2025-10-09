@@ -97,8 +97,8 @@
         group: root
         mode: "0644"
       with_items:
-        - "icecast2-somdomato.service"
-        - "liquidsoap-somdomato.service"
+        - "somdomato-icecast2.service"
+        - "somdomato-liquidsoap.service"
 
     - name: Reiniciar as unidades do systemd
       ansible.builtin.systemd:
@@ -107,6 +107,6 @@
         enabled: true
         daemon_reload: true
       with_items:
-        - "icecast2-somdomato.service"
-        - "liquidsoap-somdomato.service"
+        - "somdomato-icecast2.service"
+        - "somdomato-liquidsoap.service"
         - "nginx.service"

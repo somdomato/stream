@@ -1,6 +1,6 @@
 [Unit]
 Description=Liquidsoap daemon (SDM)
-After=network.target icecast2-somdomato.service
+After=network.target somdomato-icecast.service
 Documentation=http://liquidsoap.fm
 
 [Service]

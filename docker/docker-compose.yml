@@ -1,0 +1,59 @@
+# VPS1 stream – teste standalone (sem Next.js)
+# Para uso integrado com o site, use o docker-compose.yml na raiz do monorepo.
+#
+# Uso:
+#   cd stream
+#   docker compose -f docker/docker-compose.yml up -d
+#
+# Portas expostas no host:
+#   8000 → Icecast (stream HTTP)
+#   8010 → Liquidsoap Harbor (broadcast ao vivo)
+
+services:
+  icecast:
+    container_name: stream-icecast
+    image: moul/icecast
+    ports:
+      - "8000:8000"
+    environment:
+      - ICECAST_SOURCE_PASSWORD=hackme
+      - ICECAST_ADMIN_PASSWORD=hackmeagain
+      - ICECAST_PASSWORD=hackme
+      - ICECAST_RELAY_PASSWORD=hackme
+      - ICECAST_HOSTNAME=localhost
+    volumes:
+      - type: bind
+        source: ./icecast.docker.xml
+        target: /etc/icecast2/icecast.xml
+        read_only: true
+    networks:
+      - stream-network
+    restart: unless-stopped
+
+  liquidsoap:
+    container_name: stream-liquidsoap
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.liquidsoap
+    ports:
+      - "8010:8010"
+    volumes:
+      - type: bind
+        source: ./somdomato.docker.liq
+        target: /etc/liquidsoap/sdm/somdomato.liq
+        read_only: true
+      - type: bind
+        source: ${MUSIC_PATH:-/home/lucas/music/sdm}
+        target: /var/music/sdm
+        read_only: true
+    depends_on:
+      icecast:
+        condition: service_started
+    networks:
+      - stream-network
+    restart: unless-stopped
+
+networks:
+  stream-network:
+    name: sdm-stream-network
+    driver: bridge

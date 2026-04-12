@@ -9,7 +9,7 @@ Restart=always
 User=icecast2
 ExecStart=/usr/bin/icecast2 -c /etc/icecast2/somdomato.xml
 ExecReload=/usr/bin/kill -HUP $MAINPID
-PIDFile=/run/icecast2-somdomato.pid
+PIDFile=/run/somdomato-icecast.pid
 KillMode=process
 
 [Install]

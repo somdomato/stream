@@ -4,4 +4,4 @@ settings.log.file.path := "/var/log/liquidsoap.log"
 settings.log.stdout := true
 settings.log.level := 4
 settings.init.daemon.pidfile := true
-settings.init.daemon.pidfile.path := "/run/liquidsoap.pid"
+settings.init.daemon.pidfile.path := "/run/somdomato-liquidsoap.pid"

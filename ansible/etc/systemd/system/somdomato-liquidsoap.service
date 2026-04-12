@@ -6,7 +6,7 @@ Documentation=http://liquidsoap.fm
 [Service]
 Type=simple
 User=liquidsoap
-PIDFile=/run/liquidsoap.pid
+PIDFile=/run/somdomato-liquidsoap.pid
 ExecStart=/usr/bin/liquidsoap /etc/liquidsoap/somdomato.liq
 Restart=on-failure
 RestartSec=5s

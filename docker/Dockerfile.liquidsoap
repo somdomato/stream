@@ -7,11 +7,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     jq \
     && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p /var/log/liquidsoap /var/music/sdm /etc/liquidsoap/sdm
+RUN mkdir -p /var/log/liquidsoap /var/music/sdm /etc/liquidsoap
 
 # Script de configuração (montado como volume no compose)
-COPY docker/somdomato.docker.liq /etc/liquidsoap/sdm/somdomato.liq
+COPY docker/somdomato.docker.liq /etc/liquidsoap/somdomato.liq
 
 EXPOSE 8010
 
-CMD ["liquidsoap", "/etc/liquidsoap/sdm/somdomato.liq"]
+CMD ["liquidsoap", "/etc/liquidsoap/somdomato.liq"]

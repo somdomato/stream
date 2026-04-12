@@ -8,10 +8,13 @@
     backup_dir: "/var/backups/sdm/{{ ansible_date_time.date }}_{{ ansible_date_time.hour }}{{ ansible_date_time.minute }}{{ ansible_date_time.second }}"
 
   tasks:
-    - name: Garante que o grupo "icecast2" exista
+    - name: Garante que o grupo icecast e liquidsoap existam
       ansible.builtin.group:
-        name: icecast2
+        name: "{{ item }}"
         state: present
+      with_items:
+        - "icecast"
+        - "liquidsoap"
 
     - name: Adicionar os usuários nginx, liquidsoap e icecast2
       ansible.builtin.user:
@@ -25,51 +28,51 @@
     # ============================
     # Backup antes do deploy
     # ============================
-    - name: Criar diretorio de backup
-      ansible.builtin.file:
-        path: "{{ backup_dir }}"
-        state: directory
-        owner: root
-        group: root
-        mode: '0755'
+    # - name: Criar diretorio de backup
+    #   ansible.builtin.file:
+    #     path: "{{ backup_dir }}"
+    #     state: directory
+    #     owner: root
+    #     group: root
+    #     mode: '0755'
 
-    - name: Backup da configuração do Icecast
-      ansible.builtin.copy:
-        src: /etc/icecast2/somdomato.xml
-        dest: "{{ backup_dir }}/icecast2-somdomato.xml"
-        remote_src: true
-        owner: root
-        group: root
-        mode: '0644'
-      ignore_errors: true
+    # - name: Backup da configuração do Icecast
+    #   ansible.builtin.copy:
+    #     src: /etc/icecast2/somdomato.xml
+    #     dest: "{{ backup_dir }}/icecast2-somdomato.xml"
+    #     remote_src: true
+    #     owner: root
+    #     group: root
+    #     mode: '0644'
+    #   ignore_errors: true
 
-    - name: Backup das configurações do LiquidSoap
-      ansible.builtin.copy:
-        src: /etc/liquidsoap/sdm/
-        dest: "{{ backup_dir }}/liquidsoap-sdm/"
-        remote_src: true
-        owner: root
-        group: root
-        mode: '0644'
-      ignore_errors: true
+    # - name: Backup das configurações do LiquidSoap
+    #   ansible.builtin.copy:
+    #     src: /etc/liquidsoap/sdm/
+    #     dest: "{{ backup_dir }}/liquidsoap-sdm/"
+    #     remote_src: true
+    #     owner: root
+    #     group: root
+    #     mode: '0644'
+    #   ignore_errors: true
 
-    - name: Backup das unidades do systemd (Icecast e LiquidSoap)
-      ansible.builtin.copy:
-        src: "/etc/systemd/system/{{ item }}"
-        dest: "{{ backup_dir }}/{{ item }}"
-        remote_src: true
-        owner: root
-        group: root
-        mode: '0644'
-      ignore_errors: true
-      with_items:
-        - "somdomato-icecast.service"
-        - "somdomato-liquidsoap.service"
-        - "liquidsoap-somdomato.service"
+    # - name: Backup das unidades do systemd (Icecast e LiquidSoap)
+    #   ansible.builtin.copy:
+    #     src: "/etc/systemd/system/{{ item }}"
+    #     dest: "{{ backup_dir }}/{{ item }}"
+    #     remote_src: true
+    #     owner: root
+    #     group: root
+    #     mode: '0644'
+    #   ignore_errors: true
+    #   with_items:
+    #     - "somdomato-icecast.service"
+    #     - "somdomato-liquidsoap.service"
+    #     - "liquidsoap-somdomato.service"
 
-    - name: Exibir local do backup
-      ansible.builtin.debug:
-        msg: "Backup salvo em {{ backup_dir }}"
+    # - name: Exibir local do backup
+    #   ansible.builtin.debug:
+    #     msg: "Backup salvo em {{ backup_dir }}"
 
     # ============================
     # Deploy
@@ -82,7 +85,7 @@
         dest: /etc/letsencrypt/renewal-hooks/deploy/icecast-certificates-somdomato
         owner: root
         group: root
-        mode: '0755'
+        mode: "0755"
 
     # Icecast
     - name: Alterar as configurações do Icecast
@@ -91,7 +94,7 @@
         dest: /etc/icecast2/somdomato.xml
         owner: icecast2
         group: icecast2
-        mode: '0644'
+        mode: "0644"
 
     # LiquidSoap
     - name: Instalar os executaveis auxiliares do LiquidSoap
@@ -100,39 +103,40 @@
         dest: "/usr/local/bin/{{ item }}"
         owner: root
         group: root
-        mode: '0755'
+        mode: "0755"
       with_items:
         - "next-song"
 
     - name: Criar o diretorio de configuracoes do LiquidSoap
       ansible.builtin.file:
-        path: /etc/liquidsoap/sdm
+        path: /etc/liquidsoap
         state: directory
         owner: liquidsoap
         group: liquidsoap
-        mode: '0755'
+        mode: "0755"
 
     - name: Alterar as configurações do LiquidSoap
       ansible.builtin.copy:
-        src: "etc/liquidsoap/sdm/{{ item }}"
-        dest: "/etc/liquidsoap/sdm/{{ item }}"
+        src: "etc/liquidsoap/somdomato.liq"
+        dest: "/etc/liquidsoap/somdomato.liq"
         owner: liquidsoap
         group: liquidsoap
-        mode: '0644'
-      with_items:
-        - "somdomato.liq"
-        - "settings.liq"
-        - "outputs.ogg.liq"
-        - "outputs.mp3.liq"
+        mode: "0644"
 
     # Nginx
     - name: Copiar os arquivos de configuração dos sites do Nginx
       ansible.builtin.copy:
-        src: "etc/nginx/sites.d/50-radio.somdomato.com.conf"
-        dest: "/etc/nginx/sites.d/50-radio.somdomato.com.conf"
+        src: "etc/nginx/sites-available/01-radio.somdomato.com.conf"
+        dest: "/etc/nginx/sites-available/01-radio.somdomato.com.conf"
         owner: root
         group: root
-        mode: '0644'
+        mode: "0644"
+
+    - name: Habilitar os arquivos de configuração dos sites do Nginx
+      ansible.builtin.file:
+        src: "/etc/nginx/sites-available/01-radio.somdomato.com.conf"
+        dest: "/etc/nginx/sites-enabled/01-radio.somdomato.com.conf"
+        state: link
 
     - name: Copiar os arquivos de configuração do Nginx
       ansible.builtin.copy:
@@ -140,7 +144,7 @@
         dest: "/etc/nginx/conf.d/{{ item }}"
         owner: root
         group: root
-        mode: '0644'
+        mode: "0644"
       with_items:
         - "no-cache.conf"
 

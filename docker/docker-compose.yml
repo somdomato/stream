@@ -40,7 +40,7 @@ services:
     volumes:
       - type: bind
         source: ./somdomato.docker.liq
-        target: /etc/liquidsoap/sdm/somdomato.liq
+        target: /etc/liquidsoap/somdomato.liq
         read_only: true
       - type: bind
         source: ${MUSIC_PATH:-/home/lucas/music/sdm}

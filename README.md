@@ -51,7 +51,7 @@ Isso sobe o Next.js (`somdomato/`), Icecast e Liquidsoap (configs de `stream/doc
 | Arquivo | Equivalente produção |
 |---------|----------------------|
 | `docker/icecast.docker.xml` | `ansible/etc/icecast2/somdomato.xml` |
-| `docker/somdomato.docker.liq` | `ansible/etc/liquidsoap/sdm/somdomato.liq` |
+| `docker/somdomato.docker.liq` | `ansible/etc/liquidsoap/somdomato.liq` |
 
 Diferenças do Docker vs produção:
 

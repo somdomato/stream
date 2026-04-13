@@ -52,7 +52,6 @@ autodj_gaucha = next("gaucha")
 autodj_modao = next("modao")
 autodj_arrocha = next("arrocha")
 autodj_romantico = next("romantico")
-autodj_forro = next("forro")
 
 # Cria uma fila para músicas injetadas manualmente
 queue = request.queue(id="manual_queue")
@@ -67,7 +66,6 @@ def skip_handler(_, req) =
   autodj_modao.skip()
   autodj_arrocha.skip()
   autodj_romantico.skip()
-  autodj_forro.skip()
   
   ignore(req.status_code(200))
   ignore(req.content_type("text/plain"))
@@ -125,7 +123,6 @@ radio_gaucha = fallback(track_sensitive=false, [autodj_gaucha])
 radio_modao = fallback(track_sensitive=false, [autodj_modao])
 radio_arrocha = fallback(track_sensitive=false, [autodj_arrocha])
 radio_romantico = fallback(track_sensitive=false, [autodj_romantico])
-radio_forro = fallback(track_sensitive=false, [autodj_forro])
 
 # Output para Icecast - Geral
 output.icecast(
@@ -196,17 +193,3 @@ output.icecast(
   mount = "/romantico",
   encoding = "UTF-8",
   mksafe(radio_romantico))
-
-# Output para Icecast - Forró
-output.icecast(
-  %mp3(bitrate=128, samplerate=44100, id3v2=true),
-  name = "Radio Som do Mato - Forró",
-  description = "A mais sertaneja - Forró",
-  genre = "Forró",
-  url = "https://somdomato.com",
-  host = "localhost",
-  port = 8000,
-  password = "hackme",
-  mount = "/forro",
-  encoding = "UTF-8",
-  mksafe(radio_forro))

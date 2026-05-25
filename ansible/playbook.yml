@@ -126,16 +126,16 @@
     # Nginx
     - name: Copiar os arquivos de configuração dos sites do Nginx
       ansible.builtin.copy:
-        src: "etc/nginx/sites-available/01-radio.somdomato.com.conf"
-        dest: "/etc/nginx/sites-available/01-radio.somdomato.com.conf"
+        src: "etc/nginx/sites-available/02-radio.somdomato.com"
+        dest: "/etc/nginx/sites-available/02-radio.somdomato.com"
         owner: root
         group: root
         mode: "0644"
 
     - name: Habilitar os arquivos de configuração dos sites do Nginx
       ansible.builtin.file:
-        src: "/etc/nginx/sites-available/01-radio.somdomato.com.conf"
-        dest: "/etc/nginx/sites-enabled/01-radio.somdomato.com.conf"
+        src: "/etc/nginx/sites-available/02-radio.somdomato.com"
+        dest: "/etc/nginx/sites-enabled/02-radio.somdomato.com"
         state: link
 
     - name: Copiar os arquivos de configuração do Nginx

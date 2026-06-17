@@ -10,7 +10,7 @@ def next(genre) =
     # Chama a API do Next.js via host.docker.internal (acessa o host) passando o gênero
     result = process.read.lines("curl -s http://localhost:3000/api/music?genre=#{genre}")
     json = list.hd(default="", result)
-
+    
     # Extrair path, title, artist, id, wasRequested e isJingle do JSON
     path = list.hd(default="", process.read.lines("echo '#{json}' | jq -r '.path'"))
     title = list.hd(default="", process.read.lines("echo '#{json}' | jq -r '.title'"))
@@ -18,7 +18,7 @@ def next(genre) =
     song_id = list.hd(default="", process.read.lines("echo '#{json}' | jq -r '.id'"))
     was_requested = list.hd(default="0", process.read.lines("echo '#{json}' | jq -r 'if .wasRequested then \"1\" else \"0\" end'"))
     is_jingle = list.hd(default="0", process.read.lines("echo '#{json}' | jq -r 'if .isJingle then \"1\" else \"0\" end'"))
-
+    
     # Validar se recebemos dados válidos
     if path == "" or path == "null" then
       log("[#{genre}] Nenhuma música retornada pela API - aguardando 5s")
@@ -28,7 +28,7 @@ def next(genre) =
       log("Proxima musica [#{genre}]: #{path}")
       log("Titulo: #{title}")
       log("Artista: #{artist}")
-
+      
       # Criar request com metadados usando annotate: no URI
       # IMPORTANTE: Não fazer URL encode - paths locais precisam estar sem encoding
       uri = "annotate:title=\"#{title}\",artist=\"#{artist}\",song_id=\"#{song_id}\",was_requested=\"#{was_requested}\",is_jingle=\"#{is_jingle}\":#{path}"
@@ -83,27 +83,29 @@ autodj_romantico.on_track(fun (m) -> notify_started("romantico", m))
 queue = request.queue(id="manual_queue")
 
 # Skip handler HTTP
-def skip_handler(_, req) =
+def skip_handler(_http_req, req) =
   log("Skip recebido via HTTP")
-
+  
   # Pula a faixa atual em todos os mountpoints
   autodj_geral.skip()
   autodj_gaucha.skip()
   autodj_modao.skip()
   autodj_arrocha.skip()
   autodj_romantico.skip()
-
+  
   ignore(req.status_code(200))
   ignore(req.content_type("text/plain"))
   ignore(req.html("OK"))
 end
 
 # Play handler - injeta musica especifica
-def play_handler(_, req) =
+# http_req = record com {data, headers, method, uri} (request info)
+# req = objeto para construir a resposta HTTP
+def play_handler(http_req, req) =
   log("Play especifico recebido via HTTP")
 
-  # Extrai dados do request
-  body = req.data("")
+  # O body do POST está em http_req.data() (primeiro argumento), não em req.data()
+  body = http_req.data()
 
   # Parse do JSON para pegar path, title, artist
   path = list.hd(default="", process.read.lines("echo '#{body}' | jq -r '.path'"))
@@ -113,17 +115,31 @@ def play_handler(_, req) =
   log("Injetando musica: #{path}")
   log("Titulo: #{title}, Artista: #{artist}")
 
-  # Cria a requisicao anotada
-  uri_annotate = "annotate:title=\"#{title}\",artist=\"#{artist}\":#{path}"
-  request_obj = request.create(uri_annotate)
+  if path == "" or path == "null" then
+    log("ERRO play_handler: path vazio ou null no body recebido")
+    ignore(req.status_code(400))
+    ignore(req.content_type("text/plain"))
+    ignore(req.html("path invalido"))
+  else
+    # Cria a requisicao anotada
+    uri_annotate = "annotate:title=\"#{title}\",artist=\"#{artist}\":#{path}"
+    request_obj = request.create(uri_annotate)
 
-  # Adiciona na fila manual — o fallback(track_sensitive=false) troca automaticamente
-  # para a queue assim que o request resolver, sem precisar de skip no autodj
-  queue.push(request_obj)
-
-  ignore(req.status_code(200))
-  ignore(req.content_type("text/plain"))
-  ignore(req.html("OK"))
+    if request_obj == null() then
+      log("ERRO play_handler: request.create retornou null para #{uri_annotate}")
+      ignore(req.status_code(500))
+      ignore(req.content_type("text/plain"))
+      ignore(req.html("falha ao criar request"))
+    else
+      log("Request criada com sucesso, adicionando na fila")
+      queue.push(request_obj)
+      # Pula a faixa atual do geral para a queue entrar imediatamente
+      autodj_geral.skip()
+      ignore(req.status_code(200))
+      ignore(req.content_type("text/plain"))
+      ignore(req.html("OK"))
+    end
+  end
 end
 
 harbor.http.register(
